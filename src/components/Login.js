@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import loginService from '../services/login'
 
 const Login = ({ user, setUser }) => {
-
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -13,6 +12,7 @@ const Login = ({ user, setUser }) => {
         username, password
       })
       setUser(user)
+      window.localStorage.setItem('loggedUserBloglist', JSON.stringify(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -20,8 +20,24 @@ const Login = ({ user, setUser }) => {
     }
   }
 
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    try {
+      setUser(null)
+      window.localStorage.removeItem('loggedUserBloglist')
+    } catch (exception) {
+      console.log(exception.message)
+    }
+    
+  }
+
   const formOrUser = user
-    ? <p>{user.name} is logged in</p>
+    ? <div>
+        <p>{user.name} is logged in</p>
+        <form onSubmit={handleLogout}>
+          <button type="submit">logout</button>
+        </form>
+      </div>
     : <div>
         <h2>login</h2>
         <form onSubmit={handleLogin}>
